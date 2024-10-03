@@ -34,12 +34,12 @@ function drawSun() {
     const gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, sunRadius * 0.5, canvas.width / 2, canvas.height / 2, sunRadius);
     gradient.addColorStop(0, 'rgba(255, 255, 0, 1)');
     gradient.addColorStop(1, 'rgba(255, 204, 0, 0.5)');
-    
+
     ctx.beginPath();
     ctx.arc(canvas.width / 2, canvas.height / 2, sunRadius, 0, Math.PI * 2);
     ctx.fillStyle = gradient;
     ctx.fill();
-    
+
     // Draw sun rays
     for (let i = 0; i < 12; i++) {
         const angle = i * (Math.PI / 6);
@@ -61,6 +61,31 @@ function drawEarth() {
     ctx.strokeStyle = 'green';
     ctx.lineWidth = 3;
     ctx.stroke(); // Add a border to Earth
+}
+
+// Function to draw magnetic field lines
+function drawMagneticFieldLines() {
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)'; // Color for the magnetic field lines
+    ctx.lineWidth = 1;
+
+    const numLines = 10; // Number of magnetic field lines
+    const angleStep = (Math.PI / numLines) * 2; // Angle between lines
+
+    for (let i = 0; i < numLines; i++) {
+        const angle = i * angleStep;
+        const startX = canvas.width / 2 + Math.cos(angle) * earthRadius; // Start at the edge of the Earth
+        const startY = canvas.height / 2 + Math.sin(angle) * earthRadius;
+
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        
+        // Create a curve for the magnetic field line
+        const curveX = canvas.width / 2 + Math.cos(angle) * (earthRadius + 100);
+        const curveY = canvas.height / 2 + Math.sin(angle) * (earthRadius + 100);
+        
+        ctx.quadraticCurveTo(curveX, curveY, curveX * 1.5, curveY * 1.5);
+        ctx.stroke();
+    }
 }
 
 // Function to draw satellites with details
@@ -99,6 +124,7 @@ function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawSun();
     drawEarth();
+    drawMagneticFieldLines(); // Draw magnetic field lines
     drawSatellites();
     drawStorm();
     requestAnimationFrame(animate);
